@@ -1,0 +1,209 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    /* PERUBAHAN 1: Warna latar belakang sedikit diubah menjadi lebih cerah */
+    background-color: #f8f9fa; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Menggunakan min-height agar bisa di-scroll di layar kecil */
+    padding: 1rem; /* Menambah padding di body untuk layar kecil */
+    box-sizing: border-box; /* Memastikan padding tidak menyebabkan overflow */
+    margin: 0;
+}
+
+.container {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    /* PERUBAHAN 2: Ukuran container diperbesar sedikit */
+    max-width: 480px; 
+    text-align: center;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+h1 {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 0.2rem;
+}
+
+p {
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+.login-box {
+    margin: 2rem 0;
+}
+
+.login-box label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    text-align: left;
+}
+
+input[type="text"], textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+textarea {
+    height: 150px;
+    resize: vertical;
+    margin-top: 1rem;
+}
+
+button {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.switch-button {
+    background: none;
+    color: #007bff;
+    border: none;
+    padding: 0;
+    margin-top: 1rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #ddd;
+}
+
+.tab-button {
+    flex: 1;
+    padding: 0.8rem;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #999;
+    border-bottom: 3px solid transparent;
+    margin-top: 0;
+    /* Menghilangkan garis biru saat tombol disentuh di mobile */
+    -webkit-tap-highlight-color: transparent;
+}
+
+.tab-button.active {
+    color: #007bff;
+    border-bottom: 3px solid #007bff;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.kirim-button {
+    width: auto;
+    padding: 0.6rem 2rem;
+    float: right;
+    margin-top: 1rem;
+}
+
+.user-role {
+    margin-top: 3rem;
+    font-size: 0.9rem;
+    color: #888;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-role a {
+    color: #dc3545;
+    text-decoration: none;
+}
+
+.thank-you-page h2 {
+    font-size: 1.5rem;
+    color: #28a745;
+    margin-top: 4rem;
+    margin-bottom: 4rem;
+}
+
+.admin-footer {
+    font-style: italic;
+    color: #555;
+    margin-top: 2rem;
+}
+
+.month-group {
+    text-align: left;
+    margin-bottom: 1.5rem;
+}
+
+.month-group h3 {
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.submission-item {
+    background-color: #f9f9f9;
+    padding: 0.8rem;
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+    border: 1px solid #eee;
+    word-wrap: break-word; /* Memastikan teks panjang tidak keluar dari kotak */
+}
+
+/* PERUBAHAN 3: Aturan untuk Tampilan Mobile (Responsive) */
+@media (max-width: 480px) {
+    .container {
+        padding: 1.5rem; /* Kurangi padding container di layar kecil */
+    }
+
+    h1 {
+        font-size: 1.3rem; /* Kecilkan sedikit ukuran judul utama */
+    }
+
+    .tab-button {
+        font-size: 0.9rem; /* Kecilkan font pada tombol tab */
+        padding: 0.7rem 0.2rem;
+    }
+    
+    .thank-you-page h2 {
+        font-size: 1.3rem; /* Kecilkan font pada halaman terima kasih */
+    }
+}
