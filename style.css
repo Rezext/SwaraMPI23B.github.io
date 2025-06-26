@@ -1,15 +1,17 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+@import url('[https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap](https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap)');
 
 body {
     font-family: 'Poppins', sans-serif;
-    /* PERUBAHAN 1: Warna latar belakang sedikit diubah menjadi lebih cerah */
-    background-color: #f8f9fa; 
+    /* PERUBAHAN 1: Warna latar belakang menjadi gradasi hitam dan merah */
+    background: linear-gradient(to bottom, #000000, #ff0000); /* Hitam ke Merah */
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* Membuat gradasi tetap di tempat saat di-scroll */
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Menggunakan min-height agar bisa di-scroll di layar kecil */
-    padding: 1rem; /* Menambah padding di body untuk layar kecil */
-    box-sizing: border-box; /* Memastikan padding tidak menyebabkan overflow */
+    min-height: 100vh;
+    padding: 1rem;
+    box-sizing: border-box;
     margin: 0;
 }
 
@@ -19,8 +21,7 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     width: 100%;
-    /* PERUBAHAN 2: Ukuran container diperbesar sedikit */
-    max-width: 480px; 
+    max-width: 480px;
     text-align: center;
 }
 
@@ -55,7 +56,7 @@ p {
     text-align: left;
 }
 
-input[type="text"], textarea {
+input, textarea {
     width: 100%;
     padding: 0.8rem;
     border: 1px solid #ccc;
@@ -116,7 +117,6 @@ button:hover {
     color: #999;
     border-bottom: 3px solid transparent;
     margin-top: 0;
-    /* Menghilangkan garis biru saat tombol disentuh di mobile */
     -webkit-tap-highlight-color: transparent;
 }
 
@@ -141,17 +141,35 @@ button:hover {
 }
 
 .user-role {
-    margin-top: 3rem;
+    /* PERUBAHAN 2: Mengatur tata letak dan margin untuk tombol Logout */
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee; /* Tambahkan garis pemisah */
     font-size: 0.9rem;
     color: #888;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end; /* Pindahkan ke kanan */
     align-items: center;
+}
+
+.user-role span {
+    display: none; /* Sembunyikan teks "Rakyat" */
 }
 
 .user-role a {
     color: #dc3545;
     text-decoration: none;
+    margin-left: 1rem; /* Tambahkan jarak ke tombol Logout */
+    padding: 0.5rem 1rem;
+    border: 1px solid #dc3545;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.user-role a:hover {
+    background-color: #dc3545;
+    color: white;
 }
 
 .thank-you-page h2 {
@@ -185,25 +203,47 @@ button:hover {
     border-radius: 5px;
     margin-bottom: 0.5rem;
     border: 1px solid #eee;
-    word-wrap: break-word; /* Memastikan teks panjang tidak keluar dari kotak */
+    word-wrap: break-word;
 }
 
-/* PERUBAHAN 3: Aturan untuk Tampilan Mobile (Responsive) */
 @media (max-width: 480px) {
     .container {
-        padding: 1.5rem; /* Kurangi padding container di layar kecil */
+        padding: 1.5rem;
     }
 
     h1 {
-        font-size: 1.3rem; /* Kecilkan sedikit ukuran judul utama */
+        font-size: 1.3rem;
     }
 
     .tab-button {
-        font-size: 0.9rem; /* Kecilkan font pada tombol tab */
+        font-size: 0.9rem;
         padding: 0.7rem 0.2rem;
     }
-    
+
     .thank-you-page h2 {
-        font-size: 1.3rem; /* Kecilkan font pada halaman terima kasih */
+        font-size: 1.3rem;
+    }
+
+    .kirim-button {
+        float: none; /* Agar tombol Kirim berada di bawah textarea pada layar kecil */
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+
+    .user-role {
+        margin-top: 1.5rem;
+        padding-top: 0.5rem;
+        justify-content: center; /* Pusatkan tombol Logout di layar kecil */
+    }
+
+    .user-role a {
+        margin-left: 0;
+        margin-top: 0.5rem; /* Beri jarak dengan tombol Kirim */
+        width: 100%;
+        text-align: center;
+    }
+    
+    .user-role span {
+        display: none;
     }
 }
