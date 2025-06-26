@@ -324,3 +324,33 @@ button:hover {
         text-align: center;
     }
 }
+/* GAYA BARU UNTUK TOMBOL HAPUS */
+
+/* Menggunakan Flexbox untuk mensejajarkan teks dan tombol */
+.submission-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem; /* Jarak antara teks dan tombol */
+}
+
+.submission-text {
+    flex-grow: 1; /* Memastikan teks mengambil ruang yang tersedia */
+    text-align: left;
+}
+
+/* Gaya khusus untuk tombol hapus */
+.delete-button {
+    background-color: #e74c3c; /* Warna merah */
+    color: white;
+    width: auto; /* Lebar otomatis sesuai konten */
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin: 0; /* Hapus margin atas default */
+    flex-shrink: 0; /* Mencegah tombol menyusut */
+}
+
+.delete-button:hover {
+    background-color: #c0392b; /* Warna merah lebih gelap saat hover */
+}
