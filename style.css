@@ -1,0 +1,78 @@
+/* ----- (BARU) GAYA UNTUK FITUR CONFESS ----- */
+
+/* Gaya untuk sub-tab di dalam form confess */
+.sub-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.sub-tab-button {
+    padding: 0.5rem 1rem;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #7f8c8d;
+    border-radius: 5px 5px 0 0;
+}
+
+.sub-tab-button.active {
+    background-color: #f2f2f2;
+    font-weight: 600;
+    color: #333;
+}
+
+.sub-tab-content {
+    display: none;
+}
+
+.sub-tab-content.active {
+    display: block;
+}
+
+.sub-tab-info {
+    font-size: 0.85rem;
+    color: #95a5a6;
+    margin-bottom: 1rem;
+    text-align: left;
+}
+
+/* Tombol untuk melihat semua confess */
+.view-all-button {
+    background-color: #2ecc71;
+    margin-top: 1rem;
+}
+
+.view-all-button:hover {
+    background-color: #27ae60;
+}
+
+/* Halaman daftar confess publik */
+.confess-list-container {
+    margin: 1.5rem 0;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.confess-card {
+    background-color: #f9f9f9;
+    border-left: 4px solid #3498db;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0 5px 5px 0;
+    text-align: left;
+    word-wrap: break-word;
+}
+
+.back-button {
+    background-color: #95a5a6;
+    margin-top: 1rem;
+}
+
+.back-button:hover {
+    background-color: #7f8c8d;
+}
