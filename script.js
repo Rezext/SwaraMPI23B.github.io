@@ -114,12 +114,11 @@ function submitConfess(type) {
     submitToFirebase('confessions', { inputId: inputId, extra: { type: type } }, 'Confess');
 }
 
-// --- (PERBAIKAN) FITUR MELIHAT CONFESS PUBLIK ---
+// --- FITUR MELIHAT CONFESS PUBLIK ---
 function showPublicConfessPage() {
     const listContainer = document.getElementById('public-confess-list');
     listContainer.innerHTML = '<p>Memuat confess...</p>';
     
-    // 1. Ambil data HANYA berdasarkan tipe untuk menghindari error indeks
     db.collection('confessions').where('type', '==', 'rahasia_aja').get()
       .then(snapshot => {
         if (snapshot.empty) {
@@ -127,21 +126,18 @@ function showPublicConfessPage() {
             return;
         }
         
-        // 2. Kumpulkan semua data ke dalam sebuah array
         const confessions = [];
         snapshot.forEach(doc => {
             confessions.push(doc.data());
         });
 
-        // 3. Urutkan data secara manual di sisi klien berdasarkan waktu
         confessions.sort((a, b) => {
             const timeA = a.timestamp ? a.timestamp.toMillis() : 0;
             const timeB = b.timestamp ? b.timestamp.toMillis() : 0;
-            return timeB - timeA; // Urutkan dari yang terbaru (descending)
+            return timeB - timeA;
         });
         
-        // 4. Tampilkan data yang sudah diurutkan
-        listContainer.innerHTML = ''; // Kosongkan container
+        listContainer.innerHTML = '';
         confessions.forEach(confessData => {
             const card = document.createElement('div');
             card.className = 'confess-card';
@@ -151,7 +147,6 @@ function showPublicConfessPage() {
 
       })
       .catch(error => {
-          // Menambahkan penanganan jika terjadi error
           console.error("Gagal mengambil data confess publik:", error);
           listContainer.innerHTML = '<p>Gagal memuat confess. Silakan coba lagi nanti.</p>';
       });
@@ -164,61 +159,90 @@ function showPublicConfessPage() {
 function setupRealtimeListeners() {
     db.collection('keluhan').orderBy('timestamp', 'desc').onSnapshot(snapshot => renderSubmissions('keluhan', snapshot.docs.map(doc => doc.data())));
     db.collection('ide').orderBy('timestamp', 'desc').onSnapshot(snapshot => renderSubmissions('ide', snapshot.docs.map(doc => doc.data())));
-    db.collection('confessions').orderBy('timestamp', 'desc').onSnapshot(snapshot => renderAdminConfessions(snapshot.docs.map(doc => doc.data())));
+    // (DIUBAH) Mengirim seluruh dokumen, bukan hanya data
+    db.collection('confessions').orderBy('timestamp', 'desc').onSnapshot(snapshot => renderAdminConfessions(snapshot.docs));
+}
+
+// (BARU) Fungsi untuk menghapus confess
+function deleteConfession(docId) {
+    // Meminta konfirmasi sebelum menghapus
+    if (confirm("Apakah Anda yakin ingin menghapus confess ini secara permanen?")) {
+        db.collection('confessions').doc(docId).delete()
+        .then(() => {
+            console.log("Confession berhasil dihapus.");
+        })
+        .catch(error => {
+            console.error("Error saat menghapus confess: ", error);
+            alert("Gagal menghapus confess. Silakan coba lagi.");
+        });
+    }
 }
 
 function renderSubmissions(type, data) {
     const contentArea = document.getElementById(`admin-${type}-content`);
-    renderGroupedByMonth(contentArea, data, type);
+    renderGroupedByMonth(contentArea, data, type, false); // false = jangan tampilkan tombol hapus
 }
 
-function renderAdminConfessions(data) {
+// (DIUBAH) Fungsi ini sekarang menangani dokumen, bukan hanya data
+function renderAdminConfessions(docs) {
     const contentArea = document.getElementById('admin-confess-content');
     contentArea.innerHTML = '';
     
-    const bangetData = data.filter(item => item.type === 'rahasia_banget');
-    const ajaData = data.filter(item => item.type === 'rahasia_aja');
+    const bangetDocs = docs.filter(doc => doc.data().type === 'rahasia_banget');
+    const ajaDocs = docs.filter(doc => doc.data().type === 'rahasia_aja');
 
+    // Render "Rahasia Banget" tanpa tombol hapus
     const bangetTitle = document.createElement('h3');
     bangetTitle.textContent = "Confess (Rahasia Banget)";
     bangetTitle.style.marginTop = "0";
     contentArea.appendChild(bangetTitle);
-    renderGroupedByMonth(contentArea, bangetData, 'Confess');
+    renderGroupedByMonth(contentArea, bangetDocs.map(doc => doc.data()), 'Confess', false);
     
+    // Render "Rahasia Aja" dengan tombol hapus
     const ajaTitle = document.createElement('h3');
     ajaTitle.textContent = "Confess (Rahasia Aja)";
     contentArea.appendChild(ajaTitle);
-    renderGroupedByMonth(contentArea, ajaData, 'Confess');
+    renderGroupedByMonth(contentArea, ajaDocs, 'Confess', true); // true = tampilkan tombol hapus
 }
 
-function renderGroupedByMonth(container, data, type) {
-    container.innerHTML = ''; // Clear container before rendering
+// (DIUBAH) Fungsi ini sekarang menerima parameter showDeleteButton
+function renderGroupedByMonth(container, dataOrDocs, type, showDeleteButton) {
+    const parentContainer = container;
+    
+    // Jika ini adalah render pertama, kosongkan parentnya
+    if (!parentContainer.querySelector('.month-group')) {
+        parentContainer.innerHTML = '';
+    }
+    
     const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-    if (data.length === 0) {
-        container.innerHTML = '<p>Belum ada masukan.</p>';
+    if (dataOrDocs.length === 0) {
+        parentContainer.innerHTML = '<p>Belum ada masukan.</p>';
         return;
     }
-    const groupedByMonth = data.reduce((acc, item) => {
-        if (!item.timestamp) return acc;
-        const date = item.timestamp.toDate();
+    
+    const groupedByMonth = dataOrDocs.reduce((acc, item) => {
+        const data = showDeleteButton ? item.data() : item;
+        if (!data.timestamp) return acc;
+        const date = data.timestamp.toDate();
         const key = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
         if (!acc[key]) acc[key] = [];
-        acc[key].push(item.text);
+        const payload = showDeleteButton ? { id: item.id, text: data.text } : { text: data.text };
+        acc[key].push(payload);
         return acc;
     }, {});
-
+    
+    let htmlContent = '';
     for (const monthKey in groupedByMonth) {
-        const monthDiv = document.createElement('div');
-        monthDiv.className = 'month-group';
-        const monthTitle = document.createElement('h3');
-        monthTitle.textContent = monthKey;
-        monthDiv.appendChild(monthTitle);
-        groupedByMonth[monthKey].forEach((text, index) => {
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'submission-item';
-            itemDiv.textContent = `${type.charAt(0).toUpperCase() + type.slice(1)} ${index + 1}: ${text}`;
-            monthDiv.appendChild(itemDiv);
+        htmlContent += `<div class="month-group"><h3>${monthKey}</h3>`;
+        groupedByMonth[monthKey].forEach(item => {
+            htmlContent += `<div class="submission-item">
+                <span class="submission-text">${item.text}</span>`;
+            if (showDeleteButton) {
+                htmlContent += `<button class="delete-button" onclick="deleteConfession('${item.id}')">Hapus</button>`;
+            }
+            htmlContent += `</div>`;
         });
-        container.appendChild(monthDiv);
+        htmlContent += `</div>`;
     }
+    parentContainer.innerHTML += htmlContent;
 }
