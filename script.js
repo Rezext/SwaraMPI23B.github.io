@@ -114,26 +114,51 @@ function submitConfess(type) {
     submitToFirebase('confessions', { inputId: inputId, extra: { type: type } }, 'Confess');
 }
 
-// --- FITUR MELIHAT CONFESS PUBLIK ---
+// --- (PERBAIKAN) FITUR MELIHAT CONFESS PUBLIK ---
 function showPublicConfessPage() {
     const listContainer = document.getElementById('public-confess-list');
     listContainer.innerHTML = '<p>Memuat confess...</p>';
-    db.collection('confessions').where('type', '==', 'rahasia_aja').orderBy('timestamp', 'desc').get()
+    
+    // 1. Ambil data HANYA berdasarkan tipe untuk menghindari error indeks
+    db.collection('confessions').where('type', '==', 'rahasia_aja').get()
       .then(snapshot => {
-        listContainer.innerHTML = '';
         if (snapshot.empty) {
             listContainer.innerHTML = '<p>Belum ada confess, jadilah yang pertama!</p>';
             return;
         }
+        
+        // 2. Kumpulkan semua data ke dalam sebuah array
+        const confessions = [];
         snapshot.forEach(doc => {
+            confessions.push(doc.data());
+        });
+
+        // 3. Urutkan data secara manual di sisi klien berdasarkan waktu
+        confessions.sort((a, b) => {
+            const timeA = a.timestamp ? a.timestamp.toMillis() : 0;
+            const timeB = b.timestamp ? b.timestamp.toMillis() : 0;
+            return timeB - timeA; // Urutkan dari yang terbaru (descending)
+        });
+        
+        // 4. Tampilkan data yang sudah diurutkan
+        listContainer.innerHTML = ''; // Kosongkan container
+        confessions.forEach(confessData => {
             const card = document.createElement('div');
             card.className = 'confess-card';
-            card.textContent = doc.data().text;
+            card.textContent = confessData.text;
             listContainer.appendChild(card);
         });
+
+      })
+      .catch(error => {
+          // Menambahkan penanganan jika terjadi error
+          console.error("Gagal mengambil data confess publik:", error);
+          listContainer.innerHTML = '<p>Gagal memuat confess. Silakan coba lagi nanti.</p>';
       });
+      
     showPage('public-confess-view');
 }
+
 
 // --- FUNGSI DASBOR ADMIN ---
 function setupRealtimeListeners() {
