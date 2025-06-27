@@ -12,9 +12,10 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// Daftar NIM terdaftar
+// Daftar NIM dan Password terdaftar
 const rakyatNIMs = ['230101050102', '230101050110', '230101050111', '230101050112', '230101050113', '230101050114', '230101050115', '230101050273', '230101050274', '230101050275', '230101050276', '230101050277', '230101050651', '230101050652', '230101050665', '230101050666', '230101050667', '230101050669', '230101050670', '230101050672', '230101050674', '230101050675', '230101050676', '230101050678', '230101050679', '230101050680', '230101050681', '230101050683', '230101050764', '230101050765', '230101050766', '230101050768'];
 const adminNIMs = ['230101050652', '230101050111', '230101050110'];
+const adminPassword = "swara-2025"; // Password untuk admin
 
 // --- FUNGSI NAVIGASI ---
 function showPage(pageId) {
@@ -28,6 +29,10 @@ function showAdminLoginPage() { showPage('admin-login-page'); }
 function logout() {
     document.getElementById('nim-rakyat').value = '';
     document.getElementById('nim-admin').value = '';
+    // Kosongkan juga field password saat logout
+    if (document.getElementById('password-admin')) {
+        document.getElementById('password-admin').value = '';
+    }
     showRakyatLoginPage();
 }
 
@@ -42,14 +47,18 @@ function handleRakyatLogin() {
     }
 }
 
+// Fungsi login admin sekarang memeriksa password
 function handleAdminLogin() {
     const nim = document.getElementById('nim-admin').value;
-    if (adminNIMs.includes(nim)) {
+    const password = document.getElementById('password-admin').value;
+
+    // Cek NIM dan Password
+    if (adminNIMs.includes(nim) && password === adminPassword) {
         showPage('admin-view');
         showAdminTab('keluhan');
         setupRealtimeListeners();
     } else {
-        alert('NIM Admin tidak valid.');
+        alert('NIM atau Password Admin salah.');
     }
 }
 
@@ -119,6 +128,7 @@ function showPublicConfessPage() {
     const listContainer = document.getElementById('public-confess-list');
     listContainer.innerHTML = '<p>Memuat confess...</p>';
     
+    // Ambil data HANYA berdasarkan tipe untuk menghindari error indeks
     db.collection('confessions').where('type', '==', 'rahasia_aja').get()
       .then(snapshot => {
         if (snapshot.empty) {
@@ -126,18 +136,21 @@ function showPublicConfessPage() {
             return;
         }
         
+        // Kumpulkan semua data ke dalam sebuah array
         const confessions = [];
         snapshot.forEach(doc => {
             confessions.push(doc.data());
         });
 
+        // Urutkan data secara manual di sisi klien berdasarkan waktu
         confessions.sort((a, b) => {
             const timeA = a.timestamp ? a.timestamp.toMillis() : 0;
             const timeB = b.timestamp ? b.timestamp.toMillis() : 0;
-            return timeB - timeA;
+            return timeB - timeA; // Urutkan dari yang terbaru (descending)
         });
         
-        listContainer.innerHTML = '';
+        // Tampilkan data yang sudah diurutkan
+        listContainer.innerHTML = ''; // Kosongkan container
         confessions.forEach(confessData => {
             const card = document.createElement('div');
             card.className = 'confess-card';
@@ -159,13 +172,10 @@ function showPublicConfessPage() {
 function setupRealtimeListeners() {
     db.collection('keluhan').orderBy('timestamp', 'desc').onSnapshot(snapshot => renderSubmissions('keluhan', snapshot.docs.map(doc => doc.data())));
     db.collection('ide').orderBy('timestamp', 'desc').onSnapshot(snapshot => renderSubmissions('ide', snapshot.docs.map(doc => doc.data())));
-    // (DIUBAH) Mengirim seluruh dokumen, bukan hanya data
     db.collection('confessions').orderBy('timestamp', 'desc').onSnapshot(snapshot => renderAdminConfessions(snapshot.docs));
 }
 
-// (BARU) Fungsi untuk menghapus confess
 function deleteConfession(docId) {
-    // Meminta konfirmasi sebelum menghapus
     if (confirm("Apakah Anda yakin ingin menghapus confess ini secara permanen?")) {
         db.collection('confessions').doc(docId).delete()
         .then(() => {
@@ -180,10 +190,9 @@ function deleteConfession(docId) {
 
 function renderSubmissions(type, data) {
     const contentArea = document.getElementById(`admin-${type}-content`);
-    renderGroupedByMonth(contentArea, data, type, false); // false = jangan tampilkan tombol hapus
+    renderGroupedByMonth(contentArea, data, type, false);
 }
 
-// (DIUBAH) Fungsi ini sekarang menangani dokumen, bukan hanya data
 function renderAdminConfessions(docs) {
     const contentArea = document.getElementById('admin-confess-content');
     contentArea.innerHTML = '';
@@ -191,21 +200,18 @@ function renderAdminConfessions(docs) {
     const bangetDocs = docs.filter(doc => doc.data().type === 'rahasia_banget');
     const ajaDocs = docs.filter(doc => doc.data().type === 'rahasia_aja');
 
-    // Render "Rahasia Banget" tanpa tombol hapus
     const bangetTitle = document.createElement('h3');
     bangetTitle.textContent = "Confess (Rahasia Banget)";
     bangetTitle.style.marginTop = "0";
     contentArea.appendChild(bangetTitle);
     renderGroupedByMonth(contentArea, bangetDocs.map(doc => doc.data()), 'Confess', false);
     
-    // Render "Rahasia Aja" dengan tombol hapus
     const ajaTitle = document.createElement('h3');
     ajaTitle.textContent = "Confess (Rahasia Aja)";
     contentArea.appendChild(ajaTitle);
-    renderGroupedByMonth(contentArea, ajaDocs, 'Confess', true); // true = tampilkan tombol hapus
+    renderGroupedByMonth(contentArea, ajaDocs, 'Confess', true);
 }
 
-// (DIUBAH) Fungsi ini sekarang menerima parameter showDeleteButton
 function renderGroupedByMonth(container, dataOrDocs, type, showDeleteButton) {
     const parentContainer = container;
     
@@ -216,7 +222,9 @@ function renderGroupedByMonth(container, dataOrDocs, type, showDeleteButton) {
     
     const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
     if (dataOrDocs.length === 0) {
-        parentContainer.innerHTML = '<p>Belum ada masukan.</p>';
+        if(parentContainer.innerHTML.indexOf('<p>Belum ada masukan.</p>') === -1) {
+            parentContainer.innerHTML += '<p>Belum ada masukan.</p>';
+        }
         return;
     }
     
