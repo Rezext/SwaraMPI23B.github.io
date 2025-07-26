@@ -1,4 +1,3 @@
-// Konfigurasi Firebase Anda
 const firebaseConfig = {
     apiKey: "AIzaSyBA0kQTRed4MuEjqojRjC3J2LiQPl6JNaY",
     authDomain: "swara-mpi-23b.firebaseapp.com",
@@ -8,7 +7,6 @@ const firebaseConfig = {
     appId: "1:639234057858:web:f7d33bed0b79f21796b69b"
 };
 
-// Inisialisasi Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
@@ -17,7 +15,6 @@ const rakyatNIMs = ['230101050102', '230101050110', '230101050111', '23010105011
 const adminNIMs = ['230101050652', '230101050111', '230101050110'];
 const adminPassword = "swara-2025"; // Password untuk admin
 
-// --- FUNGSI NAVIGASI ---
 function showPage(pageId) {
     document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
     document.getElementById(pageId).classList.add('active');
@@ -29,14 +26,13 @@ function showAdminLoginPage() { showPage('admin-login-page'); }
 function logout() {
     document.getElementById('nim-rakyat').value = '';
     document.getElementById('nim-admin').value = '';
-    // Kosongkan juga field password saat logout
+
     if (document.getElementById('password-admin')) {
         document.getElementById('password-admin').value = '';
     }
     showRakyatLoginPage();
 }
 
-// --- FUNGSI LOGIN ---
 function handleRakyatLogin() {
     const nim = document.getElementById('nim-rakyat').value;
     if (rakyatNIMs.includes(nim)) {
@@ -47,12 +43,10 @@ function handleRakyatLogin() {
     }
 }
 
-// Fungsi login admin sekarang memeriksa password
 function handleAdminLogin() {
     const nim = document.getElementById('nim-admin').value;
     const password = document.getElementById('password-admin').value;
 
-    // Cek NIM dan Password
     if (adminNIMs.includes(nim) && password === adminPassword) {
         showPage('admin-view');
         showAdminTab('keluhan');
@@ -62,7 +56,6 @@ function handleAdminLogin() {
     }
 }
 
-// --- FUNGSI TAB ---
 function showRakyatTab(tabName) {
     document.querySelectorAll('#rakyat-view .tab-button').forEach(b => b.classList.remove('active'));
     document.querySelector(`#rakyat-view button[onclick="showRakyatTab('${tabName}')"]`).classList.add('active');
@@ -87,7 +80,6 @@ function showAdminTab(tabName) {
     document.getElementById(`admin-${tabName}-content`).classList.add('active');
 }
 
-// --- FUNGSI SUBMIT DATA ---
 function submitToFirebase(collection, data, message) {
     const input = document.getElementById(data.inputId);
     if (input.value.trim() === '') {
@@ -123,12 +115,10 @@ function submitConfess(type) {
     submitToFirebase('confessions', { inputId: inputId, extra: { type: type } }, 'Confess');
 }
 
-// --- FITUR MELIHAT CONFESS PUBLIK ---
 function showPublicConfessPage() {
     const listContainer = document.getElementById('public-confess-list');
     listContainer.innerHTML = '<p>Memuat confess...</p>';
     
-    // Ambil data HANYA berdasarkan tipe untuk menghindari error indeks
     db.collection('confessions').where('type', '==', 'rahasia_aja').get()
       .then(snapshot => {
         if (snapshot.empty) {
@@ -136,21 +126,18 @@ function showPublicConfessPage() {
             return;
         }
         
-        // Kumpulkan semua data ke dalam sebuah array
         const confessions = [];
         snapshot.forEach(doc => {
             confessions.push(doc.data());
         });
 
-        // Urutkan data secara manual di sisi klien berdasarkan waktu
         confessions.sort((a, b) => {
             const timeA = a.timestamp ? a.timestamp.toMillis() : 0;
             const timeB = b.timestamp ? b.timestamp.toMillis() : 0;
-            return timeB - timeA; // Urutkan dari yang terbaru (descending)
+            return timeB - timeA;
         });
         
-        // Tampilkan data yang sudah diurutkan
-        listContainer.innerHTML = ''; // Kosongkan container
+        listContainer.innerHTML = '';
         confessions.forEach(confessData => {
             const card = document.createElement('div');
             card.className = 'confess-card';
@@ -168,7 +155,6 @@ function showPublicConfessPage() {
 }
 
 
-// --- FUNGSI DASBOR ADMIN ---
 function setupRealtimeListeners() {
     db.collection('keluhan').orderBy('timestamp', 'desc').onSnapshot(snapshot => renderSubmissions('keluhan', snapshot.docs.map(doc => doc.data())));
     db.collection('ide').orderBy('timestamp', 'desc').onSnapshot(snapshot => renderSubmissions('ide', snapshot.docs.map(doc => doc.data())));
@@ -215,7 +201,6 @@ function renderAdminConfessions(docs) {
 function renderGroupedByMonth(container, dataOrDocs, type, showDeleteButton) {
     const parentContainer = container;
     
-    // Jika ini adalah render pertama, kosongkan parentnya
     if (!parentContainer.querySelector('.month-group')) {
         parentContainer.innerHTML = '';
     }
