@@ -324,33 +324,54 @@ button:hover {
         text-align: center;
     }
 }
-/* GAYA BARU UNTUK TOMBOL HAPUS */
 
-/* Menggunakan Flexbox untuk mensejajarkan teks dan tombol */
 .submission-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 1rem; /* Jarak antara teks dan tombol */
+    gap: 1rem;
 }
 
 .submission-text {
-    flex-grow: 1; /* Memastikan teks mengambil ruang yang tersedia */
+    flex-grow: 1;
     text-align: left;
 }
 
-/* Gaya khusus untuk tombol hapus */
 .delete-button {
-    background-color: #e74c3c; /* Warna merah */
+    background-color: #e74c3c;
     color: white;
-    width: auto; /* Lebar otomatis sesuai konten */
+    width: auto;
     padding: 0.4rem 0.8rem;
     font-size: 0.8rem;
     font-weight: 500;
-    margin: 0; /* Hapus margin atas default */
-    flex-shrink: 0; /* Mencegah tombol menyusut */
+    margin: 0;
+    flex-shrink: 0;
 }
 
 .delete-button:hover {
-    background-color: #c0392b; /* Warna merah lebih gelap saat hover */
+    background-color: #c0392b;
+}
+
+.watermark {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 8px 15px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 8px;
+    z-index: 9999;
+    font-family: 'Poppins', sans-serif;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 480px) {
+    .watermark {
+        bottom: 10px;
+        right: 10px;
+        font-size: 10px;
+        padding: 6px 12px;
+    }
 }
