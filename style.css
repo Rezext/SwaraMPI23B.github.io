@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
-/* ----- GAYA UTAMA & LATAR BELAKANG (DARI FILE ASLI) ----- */
+/* ----- GAYA UTAMA & LATAR BELAKANG ----- */
 body {
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(to bottom, #000000, #ff0000);
@@ -13,6 +13,13 @@ body {
     padding: 1rem;
     box-sizing: border-box;
     margin: 0;
+    -webkit-font-smoothing: antialiased; /* Teks lebih halus di Chrome/Safari */
+    -moz-osx-font-smoothing: grayscale; /* Teks lebih halus di Firefox */
+}
+
+/* Mencegah highlight abu-abu saat di-tap di mobile */
+button, a {
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* ----- SISTEM NAVIGASI & HALAMAN ----- */
@@ -104,14 +111,21 @@ h2 { color: #333; }
 p { color: #666; margin-bottom: 2rem; }
 .login-box { margin: 2rem 0; }
 .login-box label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 1rem; text-align: left; }
-input, textarea { width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 5px; font-size: 1rem; box-sizing: border-box; }
+input, textarea { 
+    width: 100%; 
+    padding: 0.8rem; 
+    border: 1px solid #ccc; 
+    border-radius: 5px; 
+    box-sizing: border-box; 
+    /* Ukuran font 16px mencegah zoom otomatis di iOS saat input difokuskan */
+    font-size: 16px; 
+}
 textarea { height: 150px; resize: vertical; margin-top: 1rem; }
-/* (DIPERBAIKI) Selector diubah agar tidak menargetkan .back-to-landing */
 #aspirasi-container button { width: 100%; padding: 0.8rem; background-color: #007bff; color: white; border: none; border-radius: 5px; font-size: 1rem; font-weight: 600; cursor: pointer; margin-top: 1rem; transition: background-color 0.3s; }
 #aspirasi-container button:hover { background-color: #0056b3; }
 .switch-button { background: none; color: #007bff; border: none; padding: 0; margin-top: 1rem; cursor: pointer; font-size: 0.9rem; }
 .tabs { display: flex; justify-content: space-around; margin-bottom: 1rem; border-bottom: 2px solid #ddd; }
-#aspirasi-container .tab-button { flex: 1; padding: 0.8rem; border: none; background-color: transparent; cursor: pointer; font-size: 1rem; font-weight: 600; color: #999; border-bottom: 3px solid transparent; margin-top: 0; -webkit-tap-highlight-color: transparent; }
+#aspirasi-container .tab-button { flex: 1; padding: 0.8rem; border: none; background-color: transparent; cursor: pointer; font-size: 1rem; font-weight: 600; color: #999; border-bottom: 3px solid transparent; margin-top: 0; }
 #aspirasi-container .tab-button.active { color: #007bff; border-bottom: 3px solid #007bff; }
 .tab-content { display: none; }
 .tab-content.active { display: block; }
@@ -186,18 +200,37 @@ input:checked + .slider:before { transform: translateX(26px); }
 /* ----- WATERMARK (DARI FILE ASLI) ----- */
 .watermark { position: fixed; bottom: 15px; right: 15px; background-color: rgba(0, 0, 0, 0.6); color: white; padding: 8px 15px; font-size: 12px; font-weight: 500; border-radius: 8px; z-index: 9999; font-family: 'Poppins', sans-serif; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); }
 
-/* ----- RESPONSIVE (GABUNGAN) ----- */
+/* ----- RESPONSIVE (OPTIMASI MOBILE) ----- */
 @media (max-width: 768px) {
     .feature-buttons { flex-direction: column; }
     .form-grid { grid-template-columns: 1fr; }
 }
+
 @media (max-width: 480px) {
     body { padding: 0; }
-    #aspirasi-wrapper-page { padding: 0; }
-    .container, .landing-container { padding: 1.5rem; border-radius: 0; min-height: 100vh; }
-    h1, .landing-container h1 { font-size: 1.3rem; }
+    #aspirasi-wrapper-page, #group-division-page { padding: 0; }
+    
+    .container, .landing-container, .group-container { 
+        padding: 2rem 1.5rem; 
+        border-radius: 0; 
+        min-height: 100vh;
+        width: 100%; 
+        box-sizing: border-box;
+    }
+    
+    h1, .landing-container h1 { font-size: 1.5rem; }
+    
+    .feature-buttons { gap: 1rem; }
+    .feature-buttons button { padding: 0.8rem 1.5rem; font-size: 1rem; }
+
     #aspirasi-container .tab-button { font-size: 0.9rem; padding: 0.7rem 0.2rem; }
     .thank-you-page h2 { font-size: 1.3rem; }
+
+    #random-result-container, #all-projects-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
     .kirim-button { float: none; width: 100%; margin-top: 0.5rem; }
     .user-role { margin-top: 1.5rem; padding-top: 0.5rem; justify-content: center; }
     .user-role a { margin-left: 0; margin-top: 0.5rem; width: 100%; text-align: center; }
