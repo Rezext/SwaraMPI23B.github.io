@@ -3,115 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SWARA MPI 23B</title>
+    <title>SWARA & Kelompok MPI 23B</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Icon Library untuk ikon tombol -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 </head>
 <body>
 
-    <div class="container">
-        <div id="rakyat-login-page" class="page active">
+    <!-- HALAMAN AWAL PEMILIHAN FITUR -->
+    <div id="landing-page" class="page active">
+        <div class="landing-container">
             <h1>SWARA MPI 23B</h1>
-            <p>(Suara Rakyat MPI 23B)</p>
-            <div class="login-box">
-                <label for="nim-rakyat">Login :</label>
-                <input type="text" id="nim-rakyat" placeholder="Masukkan NIM Anda">
-                <button onclick="handleRakyatLogin()">Masuk</button>
-            </div>
-            <button class="switch-button" onclick="showAdminLoginPage()">Login sebagai Admin</button>
-        </div>
-
-        <div id="admin-login-page" class="page">
-            <h1>SWARA MPI 23B</h1>
-            <p>(Suara Rakyat MPI 23B)</p>
-            <div class="login-box">
-                <label for="nim-admin"><u>Admin</u><br>Login :</label>
-                <input type="text" id="nim-admin" placeholder="Masukkan NIM Admin">
-                
-                <label for="password-admin" style="margin-top: 1rem;">Password :</label>
-                <input type="password" id="password-admin" placeholder="Masukkan Password Admin">
-
-                <button onclick="handleAdminLogin()">Masuk</button>
-            </div>
-            <button class="switch-button" onclick="showRakyatLoginPage()">Login sebagai Rakyat</button>
-        </div>
-
-        <div id="rakyat-view" class="page">
-            <div class="tabs">
-                <button id="tab-keluhan-rakyat" class="tab-button active" onclick="showRakyatTab('keluhan')">Keluhan</button>
-                <button id="tab-ide-rakyat" class="tab-button" onclick="showRakyatTab('ide')">Ide & Saran</button>
-                <button id="tab-confess-rakyat" class="tab-button" onclick="showRakyatTab('confess')">Confess</button>
-            </div>
-            
-            <div id="rakyat-keluhan-content" class="tab-content active">
-                <textarea id="keluhan-input" placeholder="Ketik keluhanmu:"></textarea>
-                <button class="kirim-button" onclick="submitKeluhan()">Kirim</button>
-            </div>
-            
-            <div id="rakyat-ide-content" class="tab-content">
-                <textarea id="ide-input" placeholder="Saluran Ide dan Saranmu:"></textarea>
-                <button class="kirim-button" onclick="submitIde()">Kirim</button>
-            </div>
-
-            <div id="rakyat-confess-content" class="tab-content">
-                <div class="sub-tabs">
-                    <button class="sub-tab-button active" data-target="confess-rahasia_banget">Rahasia Banget</button>
-                    <button class="sub-tab-button" data-target="confess-rahasia_aja">Rahasia Aja</button>
-                </div>
-                
-                <div id="confess-rahasia_banget" class="sub-tab-content active">
-                    <p class="sub-tab-info">Hasil confess ini hanya dapat dilihat oleh Admin.</p>
-                    <textarea id="confess-banget-input" placeholder="Tuliskan rahasiamu di sini..."></textarea>
-                    <button class="kirim-button" onclick="submitConfess('rahasia_banget')">Kirim Rahasia</button>
-                </div>
-
-                <div id="confess-rahasia_aja" class="sub-tab-content">
-                    <p class="sub-tab-info">Hasil confess ini bisa dilihat semua orang untuk seru-seruan!</p>
-                    <textarea id="confess-aja-input" placeholder="Tuliskan rahasiamu di sini..."></textarea>
-                    <button class="kirim-button" onclick="submitConfess('rahasia_aja')">Kirim Rahasia</button>
-                    <button class="view-all-button" onclick="showPublicConfessPage()">Lihat Semua Confess</button>
-                </div>
-            </div>
-             <div class="user-role">
-                <a href="#" onclick="logout()">Logout</a>
-            </div>
-        </div>
-
-        <div id="public-confess-view" class="page">
-            <h2>Semua Confess (Rahasia Aja)</h2>
-            <div id="public-confess-list" class="confess-list-container">
-                <!-- Daftar confess dimuat di sini -->
-            </div>
-            <button class="back-button" onclick="showPage('rakyat-view')">Kembali</button>
-        </div>
-        
-        <div id="terima-kasih-page" class="page thank-you-page">
-            <h2 id="terima-kasih-message">Terima Kasih!</h2>
-        </div>
-
-        <div id="admin-view" class="page">
-            <div class="tabs">
-                <button class="tab-button active" onclick="showAdminTab('keluhan')">Keluhan</button>
-                <button class="tab-button" onclick="showAdminTab('ide')">Ide & Saran</button>
-                <button class="tab-button" onclick="showAdminTab('confess')">Confess</button>
-            </div>
-            <div id="admin-keluhan-content" class="tab-content active"></div>
-            <div id="admin-ide-content" class="tab-content"></div>
-            <div id="admin-confess-content" class="tab-content"></div>
-            <p class="admin-footer">Semangat Admin-Admin Ku</p>
-            <div class="user-role">
-                <span>Admin</span>
-                <a href="#" onclick="logout()">Logout</a>
+            <p>Pilih layanan yang ingin Anda gunakan.</p>
+            <div class="feature-buttons">
+                <button onclick="showPage('aspirasi-wrapper-page')"><i class="fas fa-bullhorn"></i> Kotak Aspirasi</button>
+                <button onclick="showPage('group-division-page')"><i class="fas fa-users"></i> Pembagian Kelompok</button>
             </div>
         </div>
     </div>
 
-    <div class="watermark">
-        Created by Ahmad Rijani
+    <!-- WRAPPER UNTUK FITUR ASPIRASI (LAMA) -->
+    <div id="aspirasi-wrapper-page" class="page">
+        <button class="back-to-landing" onclick="showPage('landing-page')"><i class="fas fa-arrow-left"></i> Kembali</button>
+        <div class="container" id="aspirasi-container">
+            <div id="rakyat-login-page" class="sub-page active">
+                <h1>SWARA MPI 23B</h1>
+                <p>(Suara Rakyat MPI 23B)</p>
+                <div class="login-box">
+                    <label for="nim-rakyat">Login :</label>
+                    <input type="text" id="nim-rakyat" placeholder="Masukkan NIM Anda">
+                    <button onclick="handleRakyatLogin()">Masuk</button>
+                </div>
+                <button class="switch-button" onclick="showAspirasiSubPage('admin-login-page')">Login sebagai Admin</button>
+            </div>
+
+            <div id="admin-login-page" class="sub-page">
+                <h1>SWARA MPI 23B</h1>
+                <p>(Suara Rakyat MPI 23B)</p>
+                <div class="login-box">
+                    <label for="nim-admin"><u>Admin</u><br>Login :</label>
+                    <input type="text" id="nim-admin" placeholder="Masukkan NIM Admin">
+                    <label for="password-admin" style="margin-top: 1rem;">Password :</label>
+                    <input type="password" id="password-admin" placeholder="Masukkan Password Admin">
+                    <button onclick="handleAdminLogin()">Masuk</button>
+                </div>
+                <button class="switch-button" onclick="showAspirasiSubPage('rakyat-login-page')">Login sebagai Rakyat</button>
+            </div>
+
+            <div id="rakyat-view" class="sub-page">
+                <div class="tabs">
+                    <button class="tab-button active" onclick="showRakyatTab('keluhan')">Keluhan</button>
+                    <button class="tab-button" onclick="showRakyatTab('ide')">Ide & Saran</button>
+                    <button class="tab-button" onclick="showRakyatTab('confess')">Confess</button>
+                </div>
+                <div id="rakyat-keluhan-content" class="tab-content active">
+                    <textarea id="keluhan-input" placeholder="Ketik keluhanmu:"></textarea>
+                    <button class="kirim-button" onclick="submitKeluhan()">Kirim</button>
+                </div>
+                <div id="rakyat-ide-content" class="tab-content">
+                    <textarea id="ide-input" placeholder="Saluran Ide dan Saranmu:"></textarea>
+                    <button class="kirim-button" onclick="submitIde()">Kirim</button>
+                </div>
+                <div id="rakyat-confess-content" class="tab-content">
+                    <div class="sub-tabs">
+                        <button class="sub-tab-button active" data-target="confess-rahasia_banget">Rahasia Banget</button>
+                        <button class="sub-tab-button" data-target="confess-rahasia_aja">Rahasia Aja</button>
+                    </div>
+                    <div id="confess-rahasia_banget" class="sub-tab-content active">
+                        <p class="sub-tab-info">Hasil confess ini hanya dapat dilihat oleh Admin.</p>
+                        <textarea id="confess-banget-input" placeholder="Tuliskan rahasiamu di sini..."></textarea>
+                        <button class="kirim-button" onclick="submitConfess('rahasia_banget')">Kirim Rahasia</button>
+                    </div>
+                    <div id="confess-rahasia_aja" class="sub-tab-content">
+                        <p class="sub-tab-info">Hasil confess ini bisa dilihat semua orang untuk seru-seruan!</p>
+                        <textarea id="confess-aja-input" placeholder="Tuliskan rahasiamu di sini..."></textarea>
+                        <button class="kirim-button" onclick="submitConfess('rahasia_aja')">Kirim Rahasia</button>
+                        <button class="view-all-button" onclick="showPublicConfessPage()">Lihat Semua Confess</button>
+                    </div>
+                </div>
+                <div class="user-role"><a href="#" onclick="logoutAspirasi()">Logout</a></div>
+            </div>
+
+            <div id="public-confess-view" class="sub-page">
+                <h2>Semua Confess (Rahasia Aja)</h2>
+                <div id="public-confess-list" class="confess-list-container"></div>
+                <button class="back-button" onclick="showAspirasiSubPage('rakyat-view')">Kembali</button>
+            </div>
+
+            <div id="admin-view" class="sub-page">
+                <div class="tabs">
+                    <button class="tab-button active" onclick="showAdminTab('keluhan')">Keluhan</button>
+                    <button class="tab-button" onclick="showAdminTab('ide')">Ide & Saran</button>
+                    <button class="tab-button" onclick="showAdminTab('confess')">Confess</button>
+                </div>
+                <div id="admin-keluhan-content" class="tab-content active"></div>
+                <div id="admin-ide-content" class="tab-content"></div>
+                <div id="admin-confess-content" class="tab-content"></div>
+                
+                <div class="notification-control-panel">
+                    <h3>Kontrol Notifikasi Jadwal</h3>
+                    <p>Aktifkan untuk mengirim pengingat jadwal kuliah H-1 jam 21:00 WITA.</p>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="notification-toggle" onchange="handleNotificationToggle(this.checked)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <p class="admin-footer">Semangat Admin-Admin Ku</p>
+                <div class="user-role"><a href="#" onclick="logoutAspirasi()">Logout</a></div>
+            </div>
+
+            <div id="terima-kasih-page" class="sub-page thank-you-page">
+                <h2 id="terima-kasih-message">Terima Kasih!</h2>
+            </div>
+        </div>
     </div>
+
+    <!-- HALAMAN FITUR PEMBAGIAN KELOMPOK -->
+    <div id="group-division-page" class="page">
+        <button class="back-to-landing" onclick="showPage('landing-page')"><i class="fas fa-arrow-left"></i> Kembali</button>
+        <div class="container group-container">
+            <div class="tabs">
+                <button class="tab-button active" onclick="showGroupTab('acak')">Pembagian Acak</button>
+                <button class="tab-button" onclick="showGroupTab('manual')">Input Manual</button>
+                <button class="tab-button" onclick="showGroupTab('hasil')">Detail Kelompok</button>
+            </div>
+
+            <div id="group-tab-acak" class="group-tab-content active">
+                <h2>Buat Kelompok Baru (Acak)</h2>
+                <div class="form-grid">
+                    <input type="text" id="pj-name" placeholder="Nama Penanggung Jawab">
+                    <input type="text" id="course-name" placeholder="Nama Mata Kuliah">
+                    <input type="text" id="lecturer-name" placeholder="Nama Dosen Pengampu">
+                    <input type="password" id="group-password" placeholder="Password Proyek (MPI_2023)">
+                </div>
+                <div class="divider"></div>
+                <div class="generation-options">
+                    <p>Metode Pembagian:</p>
+                    <label><input type="radio" name="division-method" value="by-group-count" checked> Berdasarkan Jumlah Kelompok</label>
+                    <input type="number" id="group-count" placeholder="Contoh: 8">
+                    <label><input type="radio" name="division-method" value="by-member-count"> Berdasarkan Jumlah Anggota</label>
+                    <input type="number" id="member-count" placeholder="Contoh: 4" disabled>
+                </div>
+                <button class="generate-button" onclick="generateGroups()"><i class="fas fa-random"></i> Lakukan Pembagian Acak</button>
+                <div id="random-result-container"></div>
+                <!-- (BARU) Tombol Simpan Hasil Acak -->
+                <div id="save-random-result-area" style="display: none; margin-top: 1.5rem;">
+                    <button class="generate-button" style="background-color: #007bff;" onclick="saveGeneratedGroups()">
+                        <i class="fas fa-save"></i> Simpan Hasil ke Detail Kelompok
+                    </button>
+                </div>
+            </div>
+
+            <div id="group-tab-manual" class="group-tab-content">
+                <h2>Buat Kelompok Baru (Manual)</h2>
+                 <div class="form-grid">
+                    <input type="text" id="pj-name-manual" placeholder="Nama Penanggung Jawab">
+                    <input type="text" id="course-name-manual" placeholder="Nama Mata Kuliah">
+                    <input type="text" id="lecturer-name-manual" placeholder="Nama Dosen Pengampu">
+                    <input type="password" id="group-password-manual" placeholder="Password Proyek (MPI_2023)">
+                </div>
+                <div id="manual-group-input-area"></div>
+                <button class="add-group-button" onclick="addManualGroupSlot()">+ Tambah Slot Kelompok</button>
+                <button class="generate-button" onclick="saveManualGroups()"><i class="fas fa-save"></i> Simpan Kelompok Manual</button>
+            </div>
+
+            <div id="group-tab-hasil" class="group-tab-content">
+                <h2>Daftar Proyek Kelompok</h2>
+                <div id="all-projects-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="watermark">Created by Ahmad Rijani</div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    
     <script src="script.js"></script>
 </body>
 </html>
