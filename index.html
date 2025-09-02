@@ -72,6 +72,7 @@
                 </div>
             </div>
              <div class="user-role">
+                <button class="notification-button" onclick="requestNotificationPermission()">Aktifkan Notifikasi Jadwal</button>
                 <a href="#" onclick="logout()">Logout</a>
             </div>
         </div>
@@ -79,8 +80,7 @@
         <div id="public-confess-view" class="page">
             <h2>Semua Confess (Rahasia Aja)</h2>
             <div id="public-confess-list" class="confess-list-container">
-                <!-- Daftar confess dimuat di sini -->
-            </div>
+                </div>
             <button class="back-button" onclick="showPage('rakyat-view')">Kembali</button>
         </div>
         
@@ -93,10 +93,20 @@
                 <button class="tab-button active" onclick="showAdminTab('keluhan')">Keluhan</button>
                 <button class="tab-button" onclick="showAdminTab('ide')">Ide & Saran</button>
                 <button class="tab-button" onclick="showAdminTab('confess')">Confess</button>
+                <button class="tab-button" onclick="showAdminTab('settings')">Pengaturan</button>
             </div>
             <div id="admin-keluhan-content" class="tab-content active"></div>
             <div id="admin-ide-content" class="tab-content"></div>
             <div id="admin-confess-content" class="tab-content"></div>
+            <div id="admin-settings-content" class="tab-content">
+                <div class="setting-item">
+                    <span>Notifikasi Jadwal Perkuliahan</span>
+                    <label class="switch">
+                        <input type="checkbox" id="notification-toggle" onchange="toggleNotifications()">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
             <p class="admin-footer">Semangat Admin-Admin Ku</p>
             <div class="user-role">
                 <span>Admin</span>
