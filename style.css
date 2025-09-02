@@ -157,6 +157,7 @@ button:hover {
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    gap: 10px; /* Jarak antar item */
 }
 
 .user-role span {
@@ -177,6 +178,20 @@ button:hover {
     background-color: #dc3545;
     color: white;
 }
+
+.notification-button {
+    background-color: #28a745;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    width: auto; /* Agar tidak full width */
+    margin: 0;
+    font-size: 0.8rem;
+}
+.notification-button:hover {
+    background-color: #218838;
+}
+
 
 .thank-you-page h2 {
     font-size: 1.5rem;
@@ -287,6 +302,63 @@ button:hover {
     background-color: #7f8c8d;
 }
 
+/* Toggle Switch CSS */
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+}
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+.switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+}
+input:checked + .slider {
+    background-color: #2196F3;
+}
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+.slider.round {
+    border-radius: 34px;
+}
+.slider.round:before {
+    border-radius: 50%;
+}
+
+
 @media (max-width: 480px) {
     .container {
         padding: 1.5rem;
@@ -315,9 +387,10 @@ button:hover {
         margin-top: 1.5rem;
         padding-top: 0.5rem;
         justify-content: center;
+        flex-direction: column; /* Mengubah menjadi kolom */
     }
 
-    .user-role a {
+    .user-role a, .user-role button {
         margin-left: 0;
         margin-top: 0.5rem;
         width: 100%;
