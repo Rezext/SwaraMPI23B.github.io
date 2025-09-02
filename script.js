@@ -15,6 +15,79 @@ const rakyatNIMs = ['230101050102', '230101050110', '230101050111', '23010105011
 const adminNIMs = ['230101050652', '230101050111', '230101050110', '230101050683'];
 const adminPassword = "swara-2025"; // Password untuk admin
 
+// --- Penambahan Fitur Notifikasi ---
+const classSchedule = {
+    1: { day: 'Senin', courses: ['Manajemen Layanan Khusus', 'Metode Penelitian Kualitatif'] },
+    2: { day: 'Selasa', courses: ['Metode Penelitian Kuantitatif', 'Manajemen Laboratorium Pendidikan'] },
+    3: { day: 'Rabu', courses: ['Evaluasi Program Pendidikan', 'Manajemen Pendidikan dan Pelatihan', 'Supervisi Pendidikan II'] },
+    4: { day: 'Kamis', courses: ['Marketing Pendidikan', 'Manajemen Kearsipan', 'Akreditasi Sekolah/Madrasah'] },
+    5: { day: 'Jum\'at', courses: ['Event Manajemen'] },
+    6: { day: 'Sabtu', courses: [] },
+    0: { day: 'Minggu', courses: [] }
+};
+
+// Fungsi untuk meminta izin notifikasi dari pengguna
+function requestNotificationPermission() {
+    if (!("Notification" in window)) {
+        alert("Browser ini tidak mendukung notifikasi desktop.");
+    } else if (Notification.permission === "granted") {
+        alert("Notifikasi sudah diaktifkan.");
+    } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+                alert("Notifikasi berhasil diaktifkan!");
+            } else {
+                alert("Anda tidak mengizinkan notifikasi.");
+            }
+        });
+    } else {
+        alert("Notifikasi diblokir. Harap izinkan secara manual di pengaturan browser Anda.");
+    }
+}
+
+// Fungsi untuk mengirim notifikasi
+function sendScheduleNotification(courses) {
+    const notificationTitle = 'Jadwal Kuliah Besok!';
+    const notificationBody = `Jangan lupa, besok ada mata kuliah:\n- ${courses.join('\n- ')}`;
+    
+    new Notification(notificationTitle, {
+        body: notificationBody,
+        icon: 'path/to/your/icon.png' // Ganti dengan path ikon jika ada
+    });
+}
+
+// Fungsi utama untuk memeriksa dan mengirim notifikasi
+function checkAndSendNotifications() {
+    // 1. Periksa apakah fitur diaktifkan oleh admin
+    db.collection('settings').doc('notifications').get().then(doc => {
+        if (doc.exists && doc.data().isEnabled) {
+            // 2. Periksa apakah pengguna telah memberikan izin
+            if (Notification.permission === "granted") {
+                const now = new Date();
+                const witaOffset = 8 * 60; // WITA adalah UTC+8
+                const nowWita = new Date(now.getTime() + witaOffset * 60 * 1000);
+                
+                // 3. Periksa apakah sekarang jam 21.00 WITA
+                if (nowWita.getUTCHours() === 21 && nowWita.getUTCMinutes() === 0) {
+                    const tomorrowDayIndex = (nowWita.getUTCDay() + 1) % 7;
+                    const tomorrowSchedule = classSchedule[tomorrowDayIndex];
+
+                    // 4. Periksa apakah ada jadwal untuk besok
+                    if (tomorrowSchedule && tomorrowSchedule.courses.length > 0) {
+                        sendScheduleNotification(tomorrowSchedule.courses);
+                    }
+                }
+            }
+        }
+    }).catch(error => console.error("Error getting notification setting:", error));
+}
+
+
+// Jalankan pengecekan setiap menit
+setInterval(checkAndSendNotifications, 60000); 
+
+// --- Akhir dari Penambahan Fitur Notifikasi ---
+
 function showPage(pageId) {
     document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
     document.getElementById(pageId).classList.add('active');
@@ -43,6 +116,7 @@ function handleRakyatLogin() {
     }
 }
 
+// --- Modifikasi Fungsi Login Admin ---
 function handleAdminLogin() {
     const nim = document.getElementById('nim-admin').value;
     const password = document.getElementById('password-admin').value;
@@ -51,10 +125,44 @@ function handleAdminLogin() {
         showPage('admin-view');
         showAdminTab('keluhan');
         setupRealtimeListeners();
+        // Muat status notifikasi saat admin login
+        loadNotificationSetting(); 
     } else {
         alert('NIM atau Password Admin salah.');
     }
 }
+
+// Fungsi untuk memuat pengaturan notifikasi dari Firebase
+function loadNotificationSetting() {
+    const toggle = document.getElementById('notification-toggle');
+    db.collection('settings').doc('notifications').get().then(doc => {
+        if (doc.exists) {
+            toggle.checked = doc.data().isEnabled;
+        } else {
+            // Jika belum ada, set default ke false
+            toggle.checked = false;
+        }
+    }).catch(error => {
+        console.error("Error loading notification setting:", error);
+    });
+}
+
+// Fungsi untuk mengubah status notifikasi oleh admin
+function toggleNotifications() {
+    const toggle = document.getElementById('notification-toggle');
+    const isEnabled = toggle.checked;
+    db.collection('settings').doc('notifications').set({ isEnabled: isEnabled })
+        .then(() => {
+            console.log("Pengaturan notifikasi berhasil disimpan.");
+        })
+        .catch(error => {
+            console.error("Error saving notification setting: ", error);
+            alert("Gagal menyimpan pengaturan. Coba lagi.");
+            // Kembalikan ke posisi semula jika gagal
+            toggle.checked = !isEnabled;
+        });
+}
+// --- Akhir dari Modifikasi Admin ---
 
 function showRakyatTab(tabName) {
     document.querySelectorAll('#rakyat-view .tab-button').forEach(b => b.classList.remove('active'));
@@ -239,4 +347,3 @@ function renderGroupedByMonth(container, dataOrDocs, type, showDeleteButton) {
     }
     parentContainer.innerHTML += htmlContent;
 }
-
